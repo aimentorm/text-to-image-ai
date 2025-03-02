@@ -1,0 +1,20 @@
+
+---
+
+### `.gitignore`
+
+```plaintext
+# Ignore Python compiled files
+__pycache__/
+*.pyc
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+
+# Ignore generated images
+*.png
+
+# Ignore virtual environments
+venv/
+env/
