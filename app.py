@@ -10,9 +10,13 @@ app = Flask(__name__)
 # Load the Stable Diffusion model
 try:
     model_id = "stabilityai/stable-diffusion-2-1"  # Updated model for 2025 compatibility
-    pipe = StableDiffusionPipeline.from_pretrained(model_id)
+    print(f"Loading model: {model_id}")
+    
+    # Ensure float32 precision for CPU compatibility
+    pipe = StableDiffusionPipeline.from_pretrained(model_id, torch_dtype=torch.float32)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     pipe = pipe.to(device)
+    print(f"Model loaded successfully on {device}.")
 except Exception as e:
     print(f"Error loading model: {e}")
     raise
@@ -28,7 +32,7 @@ def generate_image():
     # Generate the image using the model
     print(f"Generating image for: '{prompt}'")
     try:
-        with torch.no_grad():  # Ensure no unnecessary gradient computation
+        with torch.no_grad():  # Disable gradient computation for inference
             image = pipe(prompt).images[0]
 
         # Convert the image to base64 for sending to the frontend
