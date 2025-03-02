@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Image Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #image-container {
+            margin-top: 20px;
+        }
+        #generated-image {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Text to Image Generator</h1>
+    <p>Enter a description below and click "Generate" to create an AI-generated image.</p>
+    <input type="text" id="text-input" placeholder="Describe the image you want to generate" style="width: 300px; padding: 5px;">
+    <button onclick="generateImage()">Generate</button>
+    <div id="image-container">
+        <h2>Generated Image:</h2>
+        <!-- Placeholder image initially -->
+        <img id="generated-image" src="https://via.placeholder.com/300x200?text=Generated+Image" alt="AI Generated Image">
+    </div>
+
+    <script>
+        async function generateImage() {
+            const textInput = document.getElementById('text-input').value;
+            if (!textInput) {
+                alert('Please enter a description.');
+                return;
+            }
+
+            // Send the text input to the backend API
+            try {
+                const response = await fetch('http://127.0.0.1:5000/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ prompt: textInput }),
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                // Update the image source with the generated image
+                document.getElementById('generated-image').src = `data:image/png;base64,${data.image}`;
+            } catch (error) {
+                console.error('Error generating image:', error);
+                alert('An error occurred while generating the image.');
+            }
+        }
+    </script>
+</body>
+</html>
